@@ -1,2 +1,3 @@
-# bombastus
- Some complex science
+# Bombastus
+
+Some complex science.
