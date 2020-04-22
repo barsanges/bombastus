@@ -13,6 +13,8 @@ description:         Please see the README
 
 dependencies:
 - base
+- time
+- vector
 
 library:
   source-dirs: src
