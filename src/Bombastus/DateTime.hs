@@ -10,6 +10,9 @@ module Bombastus.DateTime (
   Date,
   DateTime,
   NominalDiffTime,
+  addUTCTime,
+  normalizedDateTime,
+  weekToDateTime,
   dah,
   wah,
   mah,
@@ -26,6 +29,18 @@ type Date = Day
 
 -- | A date (like 25/12/2020) and a time (like 23:00:00).
 type DateTime = UTCTime -- TODO : take daylight saving time into account.
+
+-- | Return a date time corresponding to the given year, month and day.
+normalizedDateTime :: Int -> Int -> Int -> DateTime
+normalizedDateTime year month day = UTCTime { utctDay = date, utctDayTime = 0 }
+  where
+    date = fromGregorian (toInteger year) month day
+
+-- | Return a date time corresponding to the given year and week.
+weekToDateTime :: Int -> Int -> DateTime
+weekToDateTime year week = UTCTime { utctDay = date, utctDayTime = 0 }
+  where
+    date = fromWeekDate (toInteger year) week 1
 
 -- | Return the first day of the week of the given day.
 weekStart :: Date -> Date
