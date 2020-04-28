@@ -15,7 +15,7 @@ module Bombastus.Prices.Product (
   getCurrency
   ) where
 
-import Data.Time ( UTCTime, NominalDiffTime ) -- TODO : take time zones into account for delivery periods (not really needed for quotation dates)
+import Bombastus.DateTime ( DateTime, NominalDiffTime )
 import Bombastus.Prices.Currency ( Currency )
 import Bombastus.Prices.Market ( Market(Market) )
 
@@ -46,7 +46,7 @@ data Absolute = Week Int Int -- ^ Year and week number (1..53)
               | Quarter Int Int -- ^ Year and quarter number (1..4)
               | Season Int SeasonType -- ^ Year and season type (winter or summer)
               | Year Int
-              | FreeA UTCTime UTCTime -- ^ Delivery start and end
+              | FreeA DateTime DateTime -- ^ Delivery start and end
   deriving (Eq, Show)
 
 -- | Forward product for a given delivery.
