@@ -19,3 +19,11 @@ dependencies:
 
 library:
   source-dirs: src
+
+tests:
+  bombastus-test:
+    main:                Spec.hs
+    source-dirs:         test
+    dependencies:
+    - bombastus
+    - hspec
