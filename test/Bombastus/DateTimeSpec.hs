@@ -70,30 +70,35 @@ spec = do
     it "shifts a date from several days" $ do
       testDAH_02 `shouldBe` expectedDAH_02
 
+  describe "wah" $ do
     it "shifts a date from one week" $ do
       testWAH_01 `shouldBe` expectedWAH_01
 
     it "shifts a date from several weeks" $ do
       testWAH_02 `shouldBe` expectedWAH_02
 
+  describe "mah" $ do
     it "shifts a date from one month" $ do
       testMAH_01 `shouldBe` expectedMAH_01
 
     it "shifts a date from several months" $ do
       testMAH_02 `shouldBe` expectedMAH_02
 
+  describe "qah" $ do
     it "shifts a date from one quarter" $ do
       testQAH_01 `shouldBe` expectedQAH_01
 
     it "shifts a date from several quarters" $ do
       testQAH_02 `shouldBe` expectedQAH_02
 
+  describe "sah" $ do
     it "shifts a date from one season" $ do
       testSAH_01 `shouldBe` expectedSAH_01
 
     it "shifts a date from several seasons" $ do
       testSAH_02 `shouldBe` expectedSAH_02
 
+  describe "yah" $ do
     it "shifts a date from one year" $ do
       testYAH_01 `shouldBe` expectedYAH_01
 
