@@ -64,7 +64,7 @@ quarterStart :: Date -> Date
 quarterStart d = fromGregorian year month' 1
   where
     (year, month, _) = toGregorian d
-    month' = month `quot` 4
+    month' = 3 * ((month - 1) `quot` 3) + 1
 
 -- | Return the first day of the season of the given day.
 seasonStart :: Date -> Date
