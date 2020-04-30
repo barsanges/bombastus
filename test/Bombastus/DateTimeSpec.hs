@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -Wno-missing-signatures #-}
 {- |
    Module      : Bombastus.DateTimeSpec
    Copyright   : Copyright (C) 2020 barsanges
