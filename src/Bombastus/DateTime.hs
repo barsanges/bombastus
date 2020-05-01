@@ -71,7 +71,7 @@ seasonStart :: Date -> Date
 seasonStart d = fromGregorian year' month' 1
   where
     (year, month, _) = toGregorian d
-    (year', month') = if (month < 3)
+    (year', month') = if (month < 4)
                       then (year - 1, 10)
                       else if (month < 10)
                            then (year, 4)
