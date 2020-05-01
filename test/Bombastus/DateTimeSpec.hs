@@ -10,8 +10,22 @@ Test the module Bombastus.DateTime.
 module Bombastus.DateTimeSpec (spec) where
 
 import Test.Hspec
+import Test.QuickCheck
 import Data.Time -- FIXME : we should rely only on Bombastus.DateTime
 import Bombastus.DateTime
+
+instance Arbitrary Day where
+  arbitrary = do
+    y <- arbitrary
+    m <- elements [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+    d <- choose  (1, 31) -- FIXME: use chooseInt with QuickCheck >= 2.14
+    return (fromGregorian y m d)
+
+instance Arbitrary UTCTime where
+  arbitrary = do
+    d <- arbitrary
+    s <- choose (0, 86401)
+    return UTCTime { utctDay = d, utctDayTime = secondsToDiffTime s }
 
 testDAH_01 = let start = UTCTime { utctDay = fromGregorian 2018 6 9, utctDayTime = 1203}
              in dah start 1
@@ -104,3 +118,16 @@ spec = do
 
     it "shifts a date from several years" $ do
       testYAH_02 `shouldBe` expectedYAH_02
+
+  describe "properties" $ do
+    it "quarters start at the beginning of a month" $ property $
+      \ x i -> (qah x i) `elem` [mah x j | j <- [3 * i - 2, 3 * i - 1, 3 * i]]
+
+    it "seasons start at the beginning of a quarter" $ property $
+      \ x i -> (sah x i) `elem` [qah x j | j <- [2 * i - 1, 2 * i]]
+
+    it "years start at the beginning of a quarter" $ property $
+      \ x i -> (yah x i) `elem` [qah x j | j <- [4 * i - 3, 4 * i - 2, 4 * i - 1, 4 * i]]
+
+    it "years never start at the beginning of a season" $ property $
+      \ x i -> (yah x i) `notElem` [sah x j | j <- [2 * i - 1, 2 * i]]

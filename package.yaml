@@ -27,3 +27,4 @@ tests:
     dependencies:
     - bombastus
     - hspec
+    - QuickCheck
