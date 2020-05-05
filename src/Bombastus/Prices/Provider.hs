@@ -12,21 +12,20 @@ module Bombastus.Prices.Provider (
   getPricesInCurrency
   ) where
 
-import Data.Vector ( Vector )
-import qualified Data.Vector as V
 import Bombastus.DateTime
+import Bombastus.Numerics
 import Bombastus.Prices.Currency ( Currency )
 import Bombastus.Prices.Product ( Product, getCurrency, getDeliveryStart )
 
 -- | Structure handling market prices.
 class Provider p where
-  getDF :: p -> Currency -> DateTime -> Date -> Vector Double
-  getFX :: p -> Currency -> Currency -> DateTime -> Date -> Vector Double
-  getPrices :: p -> Product -> DateTime -> Vector Double
+  getDF :: p -> Currency -> DateTime -> Date -> Xd
+  getFX :: p -> Currency -> Currency -> DateTime -> Date -> Xd
+  getPrices :: p -> Product -> DateTime -> Xd
 
 -- | Get the price of a product in a given currency.
-getPricesInCurrency :: Provider p => p -> Product -> Currency -> DateTime -> Vector Double
-getPricesInCurrency provider prod curr t = V.zipWith (*) fx base -- TODO: move "V.zipWith (*)" in a module "Numerics".
+getPricesInCurrency :: Provider p => p -> Product -> Currency -> DateTime -> Xd
+getPricesInCurrency provider prod curr t = fx .*. base
   where
     curr' = getCurrency prod
     maturity = asDate $ getDeliveryStart prod t

@@ -12,11 +12,11 @@ module Bombastus.Assets.Asset (
 
 import Data.Set ( Set )
 import Data.Time ( UTCTime ) -- TODO : take time zones into account
-import Data.Vector ( Vector )
+import Bombastus.Numerics
 
 data Asset f1 s f2 n = Asset { nominationDates :: Set UTCTime
                              , getStates :: UTCTime -> f1 s
                              , getAdmissibleNominations :: UTCTime -> s -> f2 n
                              , nextState :: UTCTime -> s -> n -> s
-                             , getValue :: UTCTime -> s -> n -> Vector Double
+                             , getValue :: UTCTime -> s -> n -> Xd
                              }
