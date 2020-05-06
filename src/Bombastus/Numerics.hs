@@ -113,11 +113,11 @@ almostEqualXd = almostEqualXd' 1e-9
 
 -- | Test if two vectors are "equal" (for the given precision) element-wise.
 almostEqualXd' :: Double -> Xd -> Xd -> Bool
-almostEqualXd' eps x y = if V.null x || V.null y
-                         then if V.null x && V.null y
+almostEqualXd' eps x y = if lengthXd x == lengthXd y
+                         then if V.null x
                               then True
-                              else False
-                         else (V.maximum . absXd $ (x .-. y)) < eps
+                              else (V.maximum . absXd $ (x .-. y)) < eps
+                         else False
 
 -- | Element-wise maximum of two vectors.
 maxXd :: Xd -> Xd -> Xd

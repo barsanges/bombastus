@@ -37,6 +37,9 @@ spec = do
     it "with a precision of 1e-9" $ do
       almostEqualXd' 1e-9 (fromList [1, 2, 3]) (fromList [1 + 1e-12, 2 - 1e-12, 3]) `shouldBe` True
 
+    it "with different lengths" $ do
+      almostEqualXd' 1e-9 (fromList [1, 2]) (fromList [1, 2, 3]) `shouldBe` False
+
     it "should always return True when applied to the same vector" $ property $
       \ a x -> almostEqualXd' (max a 1e-12) x x
 
