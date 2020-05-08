@@ -44,6 +44,8 @@ infixl 6 .+, +., .+., .-, -., .-.
 
 -- FIXME: add (.>.), (.<.) and/or something like numpy.where?
 
+-- TODO: forbid arithmetic operations for vectors of different sizes.
+
 -- | One dimensional vector.
 type Xd = V.Vector Double
 
