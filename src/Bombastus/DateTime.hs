@@ -32,10 +32,10 @@ type Date = Day
 -- | A date (like 25/12/2020) and a time (like 23:00:00).
 type DateTime = UTCTime -- TODO : take daylight saving time into account.
 
--- | Return the time span between two datetimes in hours (1 = 1 hour,
+-- | Return the time span between two datetimes, in hours (1 = 1 hour,
 -- 0.5 = 30 min, etc).
 diffTimeInHours :: DateTime -> DateTime -> Double
-diffTimeInHours x y = 3600 * (realToFrac $ diffUTCTime x y)
+diffTimeInHours x y = 3600 * (realToFrac $ diffUTCTime x y) -- FIXME: handle daylight saving time.
 
 -- | Return the date component of a date time.
 asDate :: DateTime -> Date
