@@ -13,6 +13,7 @@ module Bombastus.Prices.Product (
   Absolute(..),
   Product(..),
   getCurrency,
+  getProfile,
   getDeliveryStart,
   getDeliveryEnd
   ) where
@@ -58,6 +59,10 @@ data Product = Product Market (Either Relative Absolute) Profile
 -- | Get the currency in which a product is quoted.
 getCurrency :: Product -> Currency
 getCurrency (Product (Market _ curr) _ _) = curr
+
+-- | Get the profile of a product.
+getProfile :: Product -> Profile
+getProfile (Product _ _ prof) = prof
 
 -- | Get the first date in the delivery period of a product.
 getDeliveryStart :: Product -> DateTime -> DateTime
