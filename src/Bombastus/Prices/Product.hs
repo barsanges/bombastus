@@ -13,7 +13,8 @@ module Bombastus.Prices.Product (
   Absolute(..),
   Product(..),
   getCurrency,
-  getDeliveryStart
+  getDeliveryStart,
+  getDeliveryEnd
   ) where
 
 import Bombastus.DateTime
@@ -80,3 +81,26 @@ getDeliveryStartAbsolute (Season y Summer) = normalizedDateTime y 4 1
 getDeliveryStartAbsolute (Season y Winter) = normalizedDateTime y 10 1
 getDeliveryStartAbsolute (Year y) = normalizedDateTime y 1 1
 getDeliveryStartAbsolute (FreeA s _) = s
+
+-- | Get the first date not in the delivery period of a product.
+getDeliveryEnd :: Product -> DateTime -> DateTime
+getDeliveryEnd (Product _ (Left p) _) t = getDeliveryEndRelative p t
+getDeliveryEnd (Product _ (Right p) _) _ = getDeliveryEndAbsolute p
+
+getDeliveryEndRelative :: Relative -> DateTime -> DateTime
+getDeliveryEndRelative (DAH i) t = dah t (i + 1)
+getDeliveryEndRelative (WAH i) t = wah t (i + 1)
+getDeliveryEndRelative (MAH i) t = mah t (i + 1)
+getDeliveryEndRelative (QAH i) t = qah t (i + 1)
+getDeliveryEndRelative (SAH i) t = sah t (i + 1)
+getDeliveryEndRelative (YAH i) t = yah t (i + 1)
+getDeliveryEndRelative (FreeR _ j) t = addUTCTime j t
+
+getDeliveryEndAbsolute :: Absolute -> DateTime
+getDeliveryEndAbsolute p = case p of
+  Week _ _ -> wah (getDeliveryStartAbsolute p) 1
+  Month _ _ -> mah (getDeliveryStartAbsolute p) 1
+  Quarter _ _ -> qah (getDeliveryStartAbsolute p) 1
+  Season _ _ -> sah (getDeliveryStartAbsolute p) 1
+  Year _ -> yah (getDeliveryStartAbsolute p) 1
+  FreeA _ e -> e
