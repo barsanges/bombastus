@@ -20,7 +20,9 @@ module Bombastus.DateTime (
   mah,
   qah,
   sah,
-  yah
+  yah,
+  nextPeakPeriod,
+  nextOffpeakPeriod
   ) where
 
 import Data.Time
@@ -124,3 +126,50 @@ yah :: DateTime -> Int -> DateTime
 yah t n = UTCTime { utctDay = date, utctDayTime = 0 }
   where
     date = addGregorianYearsClip (toInteger n) $ yearStart $ utctDay t
+
+-- | Return the day of the week (1 for Monday, etc). A similar function exists
+-- in time 1.10, and should be used as soon as we use the right version of the
+-- library.
+dayOfWeek :: Date -> Int
+dayOfWeek (ModifiedJulianDay d) = (mod (fromInteger d + 2) 7) + 1
+
+-- | Return the first peak datetime greater or equal than the given time.
+nextPeak :: DateTime -> DateTime
+nextPeak t
+  | dayOfWeek today <= 5 && hours < 8 = UTCTime { utctDay = today, utctDayTime = eightAM}
+  | dayOfWeek today <= 5 && hours >= 8 && hours < 20 = t
+  | dayOfWeek today <= 4 && hours >= 20 = UTCTime { utctDay = tomorrow, utctDayTime = eightAM}
+  | otherwise = UTCTime {utctDay = monday, utctDayTime = eightAM }
+  where
+    hours = todHour . timeToTimeOfDay . utctDayTime $ t
+    today = utctDay t
+    tomorrow = utctDay $ dah t 1
+    monday = utctDay $ wah t 1
+    eightAM = timeOfDayToTime $ TimeOfDay 8 0 0
+
+-- | Return the first offpeak datetime greater or equal than the given time.
+nextOffpeak :: DateTime -> DateTime
+nextOffpeak t = if (dayOfWeek . utctDay $ t) > 5 || hours < 8 || hours >= 20
+                then t
+                else UTCTime { utctDay = utctDay t, utctDayTime = eightPM }
+  where
+    hours = todHour . timeToTimeOfDay . utctDayTime $ t
+    eightPM = timeOfDayToTime $ TimeOfDay 20 0 0
+
+-- | Return the bounds of the next peak periods (lower bound: first datetime in
+-- the peak period; upper bound: first date greater than the previous not in the
+-- peak period).
+nextPeakPeriod :: DateTime -> (DateTime, DateTime)
+nextPeakPeriod t = (low, up)
+  where
+    low = nextPeak t
+    up = nextOffpeak (max low t)
+
+-- | Return the bounds of the next offpeak periods (lower bound: first datetime
+-- in the offpeak period; upper bound: first date greater than the previous not
+-- in the offpeak period).
+nextOffpeakPeriod :: DateTime -> (DateTime, DateTime)
+nextOffpeakPeriod t = (low, up)
+  where
+    low = nextOffpeak t
+    up = nextPeak (max low t)
