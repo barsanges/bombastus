@@ -40,7 +40,6 @@ data Relative = DAH Int -- ^ Number of days from quotation date
               | QAH Int -- ^ Number of quarters from quotation date
               | SAH Int -- ^ Number of seasons from quotation date
               | YAH Int -- ^ Number of calendar years from quotation date
-              | FreeR NominalDiffTime NominalDiffTime -- ^ Delivery start and end
   deriving (Eq, Show)
 
 -- | Absolute product: the delivery dates do not depend on the quotation date.
@@ -76,7 +75,6 @@ getDeliveryStartRelative (MAH i) t = mah t i
 getDeliveryStartRelative (QAH i) t = qah t i
 getDeliveryStartRelative (SAH i) t = sah t i
 getDeliveryStartRelative (YAH i) t = yah t i
-getDeliveryStartRelative (FreeR i _) t = addUTCTime i t
 
 getDeliveryStartAbsolute :: Absolute -> DateTime
 getDeliveryStartAbsolute (Week y w) = weekToDateTime y w
@@ -99,7 +97,6 @@ getDeliveryEndRelative (MAH i) t = mah t (i + 1)
 getDeliveryEndRelative (QAH i) t = qah t (i + 1)
 getDeliveryEndRelative (SAH i) t = sah t (i + 1)
 getDeliveryEndRelative (YAH i) t = yah t (i + 1)
-getDeliveryEndRelative (FreeR _ j) t = addUTCTime j t
 
 getDeliveryEndAbsolute :: Absolute -> DateTime
 getDeliveryEndAbsolute p = case p of
