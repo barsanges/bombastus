@@ -156,7 +156,7 @@ nextOffpeak t = if (dayOfWeek . utctDay $ t) > 5 || hours < 8 || hours >= 20
     hours = todHour . timeToTimeOfDay . utctDayTime $ t
     eightPM = timeOfDayToTime $ TimeOfDay 20 0 0
 
--- | Return the bounds of the next peak periods (lower bound: first datetime in
+-- | Return the bounds of the next peak period (lower bound: first datetime in
 -- the peak period; upper bound: first date greater than the previous not in the
 -- peak period).
 nextPeakPeriod :: DateTime -> (DateTime, DateTime)
@@ -165,7 +165,7 @@ nextPeakPeriod t = (low, up)
     low = nextPeak t
     up = nextOffpeak (max low t)
 
--- | Return the bounds of the next offpeak periods (lower bound: first datetime
+-- | Return the bounds of the next offpeak period (lower bound: first datetime
 -- in the offpeak period; upper bound: first date greater than the previous not
 -- in the offpeak period).
 nextOffpeakPeriod :: DateTime -> (DateTime, DateTime)
