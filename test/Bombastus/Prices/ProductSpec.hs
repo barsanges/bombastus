@@ -216,4 +216,4 @@ spec = do
     it "for a free absolute offpeak product" $ do
       hoursInDelivery freeAOffpeak t `shouldBe` 24
 
--- FIXME : add a test for the property 'peak + offpeak = base'.
+-- FIXME: add a test for the property 'peak + offpeak = base'.
