@@ -15,7 +15,8 @@ module Bombastus.Prices.Product (
   getCurrency,
   getProfile,
   getDeliveryStart,
-  getDeliveryEnd
+  getDeliveryEnd,
+  hoursInDelivery
   ) where
 
 import Bombastus.DateTime
@@ -106,3 +107,27 @@ getDeliveryEndAbsolute p = case p of
   Season _ _ -> sah (getDeliveryStartAbsolute p) 1
   Year _ -> yah (getDeliveryStartAbsolute p) 1
   FreeA _ e -> e
+
+-- | Number of hours in the delivery period of the product.
+hoursInDelivery :: Product -> DateTime -> Double
+hoursInDelivery p t = case getProfile p of
+    Base -> diffTimeInHours end start
+    Peak -> sumPeriods nextPeakPeriod start end
+    Offpeak -> sumPeriods nextOffpeakPeriod start end
+    None -> diffTimeInHours end start
+  where
+    start = getDeliveryStart p t
+    end = getDeliveryEnd p t
+
+sumPeriods :: (DateTime -> (DateTime, DateTime))
+           -> DateTime
+           -> DateTime
+           -> Double
+sumPeriods nextPeriod start end = go start
+  where
+    go x = if finish < end
+           then current + go finish
+           else current
+      where
+        (begin, finish) = nextPeriod x -- Assume begin >= x
+        current = diffTimeInHours (min finish end) (min begin end)-- Assume finish >= begin
