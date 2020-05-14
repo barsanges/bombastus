@@ -37,7 +37,7 @@ type DateTime = UTCTime -- TODO : take daylight saving time into account.
 -- | Return the time span between two datetimes, in hours (1 = 1 hour,
 -- 0.5 = 30 min, etc).
 diffTimeInHours :: DateTime -> DateTime -> Double
-diffTimeInHours x y = (realToFrac $ diffUTCTime x y) / 3600-- FIXME: handle daylight saving time.
+diffTimeInHours x y = realToFrac (diffUTCTime x y) / 3600-- FIXME: handle daylight saving time.
 
 -- | Return the date component of a date time.
 asDate :: DateTime -> Date
@@ -79,11 +79,10 @@ seasonStart :: Date -> Date
 seasonStart d = fromGregorian year' month' 1
   where
     (year, month, _) = toGregorian d
-    (year', month') = if (month < 4)
-                      then (year - 1, 10)
-                      else if (month < 10)
-                           then (year, 4)
-                           else (year, 10)
+    (year', month')
+      | month < 4 = (year - 1, 10)
+      | month < 10 = (year, 4)
+      | otherwise = (year, 10)
 
 -- | Return the first day of the year of the given day.
 yearStart :: Date -> Date
