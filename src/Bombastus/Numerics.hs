@@ -7,6 +7,7 @@ Vectors of double and functions to calculate with them.
 -}
 
 module Bombastus.Numerics (
+  nan,
   Xd,
   fromList,
   lengthXd,
@@ -41,6 +42,9 @@ import qualified Data.Vector as V -- FIXME: should we use unboxed vectors?
 
 infixl 7 .*, *., .*., ./, /., ./.
 infixl 6 .+, +., .+., .-, -., .-.
+
+nan :: Double
+nan = 0/0
 
 -- FIXME: add (.>.), (.<.) and/or something like numpy.where?
 
