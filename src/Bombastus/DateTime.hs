@@ -13,6 +13,7 @@ module Bombastus.DateTime (
   addUTCTime,
   diffTimeInHours,
   asDate,
+  diffDateInYears,
   normalizedDateTime,
   weekToDateTime,
   dah,
@@ -26,6 +27,7 @@ module Bombastus.DateTime (
   ) where
 
 import Data.Time
+import Data.Time.Calendar ( diffDays )
 import Data.Time.Calendar.WeekDate ( fromWeekDate, toWeekDate )
 
 -- | A date (like 25/12/2020) without time within the day.
@@ -42,6 +44,11 @@ diffTimeInHours x y = realToFrac (diffUTCTime x y) / 3600-- FIXME: handle daylig
 -- | Return the date component of a date time.
 asDate :: DateTime -> Date
 asDate = utctDay
+
+-- | Return the difference between two dates as a fraction of year (for a year
+-- of 365 days).
+diffDateInYears :: Date -> Date -> Double
+diffDateInYears s t = fromIntegral (diffDays s t) / 365
 
 -- | Return a date time corresponding to the given year, month and day.
 normalizedDateTime :: Int -> Int -> Int -> DateTime
