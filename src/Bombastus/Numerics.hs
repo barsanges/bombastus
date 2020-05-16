@@ -48,7 +48,10 @@ nan = 0/0
 
 -- FIXME: add (.>.), (.<.) and/or something like numpy.where?
 
--- TODO: forbid arithmetic operations for vectors of different sizes.
+-- TODO: forbid arithmetic operations for vectors of different sizes. We might
+-- use something like:
+--   type Xd = Either SizeMismatch (Vector Double)
+-- where SizeMismatch is a type to be defined.
 
 -- | One dimensional vector.
 type Xd = V.Vector Double
