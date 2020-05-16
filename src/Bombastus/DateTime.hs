@@ -13,6 +13,7 @@ module Bombastus.DateTime (
   addUTCTime,
   diffTimeInHours,
   asDate,
+  diffDateInDays,
   diffDateInYears,
   normalizedDateTime,
   weekToDateTime,
@@ -44,6 +45,10 @@ diffTimeInHours x y = realToFrac (diffUTCTime x y) / 3600-- FIXME: handle daylig
 -- | Return the date component of a date time.
 asDate :: DateTime -> Date
 asDate = utctDay
+
+-- | Return the difference between two dates in days.
+diffDateInDays :: Date -> Date -> Int
+diffDateInDays s t = fromIntegral (diffDays s t)
 
 -- | Return the difference between two dates as a fraction of year (for a year
 -- of 365 days).
