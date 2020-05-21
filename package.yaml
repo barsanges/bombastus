@@ -19,6 +19,8 @@ dependencies:
 
 library:
   source-dirs: src
+  dependencies:
+  - exact-combinatorics
 
 tests:
   bombastus-test:
