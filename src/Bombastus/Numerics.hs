@@ -13,6 +13,7 @@ module Bombastus.Numerics (
   lengthXd,
   zerosLike,
   onesLike,
+  (!),
   (+.),
   (.+),
   (.+.),
@@ -37,7 +38,7 @@ module Bombastus.Numerics (
   expXd
   ) where
 
-import Data.Vector ( fromList )
+import Data.Vector ( fromList, (!) )
 import qualified Data.Vector as V -- FIXME: should we use unboxed vectors?
 
 infixl 7 .*, *., .*., ./, /., ./.
