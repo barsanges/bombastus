@@ -62,7 +62,7 @@ index tree t -- FIXME: add the possibility to choose the step size.
   | d tree <= 0 = min 0 n
   | otherwise = n
   where
-    n = diffDateInDays (t0 tree) t
+    n = diffDateInDays t (t0 tree)
 
 getDF' :: BlackTree2 -> Currency -> DateTime -> Date -> Xd
 getDF' tree curr t maturity
