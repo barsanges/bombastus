@@ -18,10 +18,10 @@ import Bombastus.Prices.Product ( Product, getCurrency )
 import Bombastus.Prices.Provider
 import Math.Combinatorics.Exact.Binomial ( choose )
 
+data Parameters = Parameters { d :: Double, u :: Double, pu :: Double }
+
 -- | A binomial tree for the Black (1976) model, with a step size of one day.
-data BlackTree2 = BlackTree2 { d :: Double
-                             , u :: Double
-                             , pu :: Double
+data BlackTree2 = BlackTree2 { parameters :: Maybe Parameters
                              , r :: Double
                              , t0 :: Date
                              , f0 :: Double
@@ -40,15 +40,16 @@ mkTree :: DateTime   -- ^ Initial date
        -> Double     -- ^ Black volatility
        -> Double     -- ^ Interest rate
        -> BlackTree2 -- ^ Resulting tree
-mkTree t p value sigma rate = BlackTree2 { d = d'
-                                         , u = u'
-                                         , pu = pu'
+mkTree t p value sigma rate = BlackTree2 { parameters = params
                                          , r = rate
                                          , t0 = asDate t
                                          , f0 = value
                                          , prod = p
                                          }
   where
+    params = if sigma > 0
+             then Just $ Parameters { d = d', u = u', pu = pu' }
+             else Nothing
     step = 1 / 365
     d' = exp (-sigma * sqrt step)
     u' = exp (sigma * sqrt step)
@@ -58,11 +59,7 @@ nans :: Int -> Xd
 nans n = fromList [nan | _ <- [0..n] ]
 
 index :: BlackTree2 -> Date -> Int
-index tree t -- FIXME: add the possibility to choose the step size.
-  | d tree <= 0 = min 0 n
-  | otherwise = n
-  where
-    n = diffDateInDays t (t0 tree)
+index tree t = diffDateInDays t (t0 tree)
 
 getDF' :: BlackTree2 -> Currency -> DateTime -> Date -> Xd
 getDF' tree curr t maturity
@@ -85,10 +82,12 @@ getFX' tree curr1 curr2 t maturity
 getLevel :: BlackTree2 -> Int -> Xd
 getLevel tree n
   | n < 0 = fromList []
-  | otherwise = fromList [ (f0 tree) * ((d tree) ** i') * ((u tree) ** (n' - i'))
-                         | i <- [0..n],
-                           let i' = fromIntegral i,
-                           let n' = fromIntegral n ]
+  | otherwise = case parameters tree of
+      Just p -> fromList [ (f0 tree) * ((d p) ** i') * ((u p) ** (n' - i'))
+                           | i <- [0..n],
+                             let i' = fromIntegral i,
+                             let n' = fromIntegral n ]
+      Nothing -> fromList [f0 tree]
 
 getPrices' :: BlackTree2 -> Product -> DateTime -> Xd
 getPrices' tree p t
