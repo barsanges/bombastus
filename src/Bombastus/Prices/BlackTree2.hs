@@ -8,7 +8,8 @@ A binomial tree for the Black (1976) model.
 
 module Bombastus.Prices.BlackTree2 (
   BlackTree2,
-  mkTree
+  mkTree,
+  regress
   ) where
 
 import Bombastus.DateTime
@@ -96,17 +97,21 @@ getPrices' tree p t
   where
     n = index tree (asDate t)
 
-conditionalExpectation :: BlackTree2 -> Int -> Xd -> Xd
-conditionalExpectation bt n values
-  | n > lengthXd values = nans n
-  | otherwise = fromList [ sum [ (values ! (i + j)) * fromIntegral (choose k j)
-                               | j <- [0..k] ]
-                         | i <- [0..n] ]
+-- | Regress the given values on the prices at a given date.
+regress :: BlackTree2 -> DateTime -> Xd -> Xd
+regress bt t values = case parameters bt of
+  Nothing -> values
+  Just p -> if n > lengthXd values
+            then nans n
+            else fromList [ sum [ (values ! (i + j))
+                                  * ((pu p) ** (k' - j'))
+                                  * ((1 - (pu p)) ** j')
+                                  * fromIntegral (choose k j)
+                                  | j <- [0..k],
+                                    let j' = fromIntegral j ]
+                            | i <- [0..n] ]
   -- FIXME: there is a probably a better/faster way to write this?
   where
-    k = n - lengthXd values
-
-regress :: BlackTree2 -> DateTime -> Xd -> Xd
-regress bt t values = conditionalExpectation bt n values
-  where
     n = index bt (asDate t)
+    k = lengthXd values - (n + 1)
+    k' = fromIntegral k

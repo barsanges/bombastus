@@ -58,12 +58,33 @@ spec = do
     it "negative volatility is clipped at 0" $ do
       getPrices constantTree' year2019Base t2 `shouldBe` fromList [100]
 
+    it "for regression at the first step" $ do
+      compareXd (regress constantTree t0 (fromList [50])) (fromList [50]) `shouldBe` Nothing
+
+    it "for regression at the second step" $ do
+      compareXd (regress constantTree t1 (fromList [50])) (fromList [50]) `shouldBe` Nothing
+
+    it "for regression at the third step" $ do
+      compareXd (regress constantTree t2 (fromList [50])) (fromList [50]) `shouldBe` Nothing
+
   describe "test a regular Black tree" $ do
     it "at the first step" $ do
-      almostEqualXd treeT0 (getPrices tree year2019Base t0) `shouldBe` True
+      compareXd treeT0 (getPrices tree year2019Base t0) `shouldBe` Nothing
 
     it "at the second step" $ do
-      almostEqualXd treeT1 (getPrices tree year2019Base t1) `shouldBe` True
+      compareXd treeT1 (getPrices tree year2019Base t1) `shouldBe` Nothing
 
     it "at the third step" $ do
-      almostEqualXd treeT2 (getPrices tree year2019Base t2) `shouldBe` True
+      compareXd treeT2 (getPrices tree year2019Base t2) `shouldBe` Nothing
+
+    it "for regression at the first step" $ do
+      compareXd (regress tree t0 treeT0) treeT0 `shouldBe` Nothing
+
+    it "for regression between the second and first step" $ do
+      compareXd (regress tree t0 treeT1) treeT0 `shouldBe` Nothing
+
+    it "for regression between the third and first step" $ do
+      compareXd (regress tree t0 treeT2) treeT0 `shouldBe` Nothing
+
+    it "for regression between the third and first step" $ do
+      compareXd (regress tree t1 treeT2) treeT1 `shouldBe` Nothing
