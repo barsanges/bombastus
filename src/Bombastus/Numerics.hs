@@ -28,6 +28,7 @@ module Bombastus.Numerics (
   (./.),
   almostEqualXd,
   almostEqualXd',
+  compareXd,
   maxXd,
   maxXd',
   minXd,
@@ -117,6 +118,8 @@ x ./ a = V.map (/a) x
 (./.) :: Xd -> Xd -> Xd
 (./.) = V.zipWith (/)
 
+-- TODO: add an almostEqualWithMessage
+
 -- | Test if two vectors are equal element-wise (with a precision of 1e-9).
 almostEqualXd :: Xd -> Xd -> Bool
 almostEqualXd = almostEqualXd' 1e-9
@@ -128,6 +131,13 @@ almostEqualXd' eps x y = sameLength && (xNull || diffSmall)
     sameLength = lengthXd x == lengthXd y
     xNull = V.null x
     diffSmall = (V.maximum . absXd $ (x .-. y)) < eps
+
+-- | Test if two vectors are equal element-wise (with a precision of 1e-9).
+-- Return a message if this is not the case.
+compareXd :: Xd -> Xd -> Maybe String
+compareXd x y = case almostEqualXd x y of
+  True -> Nothing
+  False -> Just $ (show x) ++ " /= " ++ (show y)
 
 -- | Element-wise maximum of two vectors.
 maxXd :: Xd -> Xd -> Xd
