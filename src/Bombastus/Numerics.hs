@@ -118,8 +118,6 @@ x ./ a = V.map (/a) x
 (./.) :: Xd -> Xd -> Xd
 (./.) = V.zipWith (/)
 
--- TODO: add an almostEqualWithMessage
-
 -- | Test if two vectors are equal element-wise (with a precision of 1e-9).
 almostEqualXd :: Xd -> Xd -> Bool
 almostEqualXd = almostEqualXd' 1e-9
